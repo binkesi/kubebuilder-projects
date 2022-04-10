@@ -17,26 +17,9 @@ limitations under the License.
 package v1
 
 import (
+	"github.com/binkesi/kubebuilder-projects/myfedcluster/api/v1/common"
 	apiv1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-)
-
-type ClusterConditionType string
-
-// These are valid conditions of a cluster.
-const (
-	// ClusterReady means the cluster is ready to accept workloads.
-	ClusterReady ClusterConditionType = "Ready"
-	// ClusterOffline means the cluster is temporarily down or not reachable
-	ClusterOffline ClusterConditionType = "Offline"
-)
-
-type TLSValidation string
-
-const (
-	TLSAll            TLSValidation = "*"
-	TLSSubjectName    TLSValidation = "SubjectName"
-	TLSValidityPeriod TLSValidation = "ValidityPeriod"
 )
 
 // LocalSecretReference is a reference to a secret within the enclosing
@@ -49,7 +32,7 @@ type LocalSecretReference struct {
 
 type ClusterCondition struct {
 	// Type of cluster condition, Ready or Offline.
-	Type ClusterConditionType `json:"type"`
+	Type common.ClusterConditionType `json:"type"`
 	// Status of the condition, one of True, False, Unknown.
 	Status apiv1.ConditionStatus `json:"status"`
 	// Last time the condition was checked.
@@ -85,12 +68,6 @@ type MyFedClusterSpec struct {
 	// member cluster. The secret needs to exist in the same namespace
 	// as the control plane and should have a "token" key.
 	SecretRef LocalSecretReference `json:"secretRef"`
-
-	// DisabledTLSValidations defines a list of checks to ignore when validating
-	// the TLS connection to the member cluster.  This can be any of *, SubjectName, or ValidityPeriod.
-	// If * is specified, it is expected to be the only option in list.
-	// +optional
-	DisabledTLSValidations []TLSValidation `json:"disabledTLSValidations,omitempty"`
 }
 
 // MyFedClusterStatus defines the observed state of MyFedCluster
