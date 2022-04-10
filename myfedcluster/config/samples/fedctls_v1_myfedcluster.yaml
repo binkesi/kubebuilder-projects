@@ -1,0 +1,6 @@
+apiVersion: fedctls.myfed.domain/v1
+kind: MyFedCluster
+metadata:
+  name: myfedcluster-sample
+spec:
+  # TODO(user): Add fields here

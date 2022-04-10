@@ -1,0 +1,20 @@
+# permissions for end users to view fedobjects.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: fedobject-viewer-role
+rules:
+- apiGroups:
+  - fedctls.myfed.domain
+  resources:
+  - fedobjects
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - fedctls.myfed.domain
+  resources:
+  - fedobjects/status
+  verbs:
+  - get

@@ -1,0 +1,24 @@
+# permissions for end users to edit myfedclusters.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: myfedcluster-editor-role
+rules:
+- apiGroups:
+  - fedctls.myfed.domain
+  resources:
+  - myfedclusters
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - fedctls.myfed.domain
+  resources:
+  - myfedclusters/status
+  verbs:
+  - get
