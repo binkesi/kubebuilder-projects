@@ -52,7 +52,7 @@ type MyFedClusterReconciler struct {
 // - https://pkg.go.dev/sigs.k8s.io/controller-runtime@v0.10.0/pkg/reconcile
 func (r *MyFedClusterReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
 	log := r.Log.WithValues("MyFedCluster", req.NamespacedName)
-	federatedCluster := &myfedv1.FederatedCluster{}
+	federatedCluster := &myfedv1.MyFedCluster{}
 	if err := r.Get(ctx, req.NamespacedName, federatedCluster); err != nil {
 		log.Info("Failed to get FederatedCluster", "cluster", req.NamespacedName)
 		return ctrl.Result{}, client.IgnoreNotFound(err)

@@ -21,8 +21,6 @@ import (
 	"strings"
 	"time"
 
-	kubeclientset "k8s.io/client-go/kubernetes"
-
 	myfedv1 "github.com/binkesi/kubebuilder-projects/myfedcluster/api/v1"
 	"github.com/binkesi/kubebuilder-projects/myfedcluster/api/v1/common"
 	"github.com/pkg/errors"
@@ -71,7 +69,7 @@ type ClusterClient struct {
 	clusterName string
 }
 
-func NewClusterClientSet(c *myfedv1.FederatedCluster, client client.Client, timeout time.Duration) (*ClusterClient, error) {
+func NewClusterClientSet(c *myfedv1.MyFedCluster, client client.Client, timeout time.Duration) (*ClusterClient, error) {
 	clusterClientSet := ClusterClient{clusterName: c.Name}
 	clusterConfig, err := buildClusterConfig(c, client)
 	if err != nil {
@@ -82,7 +80,7 @@ func NewClusterClientSet(c *myfedv1.FederatedCluster, client client.Client, time
 	return &clusterClientSet, err
 }
 
-func buildClusterConfig(fedCluster *myfedv1.FederatedCluster, client client.Client) (*restclient.Config, error) {
+func buildClusterConfig(fedCluster *myfedv1.MyFedCluster, client client.Client) (*restclient.Config, error) {
 	clusterName := fedCluster.Name
 
 	apiEndpoint := fedCluster.Spec.APIEndpoint
@@ -123,8 +121,8 @@ func buildClusterConfig(fedCluster *myfedv1.FederatedCluster, client client.Clie
 }
 
 // GetClusterHealthStatus gets the kubernetes cluster health status by requesting "/healthz"
-func (c *ClusterClient) GetClusterHealthStatus() (*myfedv1.FederatedClusterStatus, error) {
-	clusterStatus := myfedv1.FederatedClusterStatus{}
+func (c *ClusterClient) GetClusterHealthStatus() (*myfedv1.MyFedClusterStatus, error) {
+	clusterStatus := myfedv1.MyFedClusterStatus{}
 	currentTime := metav1.Now()
 	clusterReady := ClusterReady
 	healthzOk := HealthzOk
