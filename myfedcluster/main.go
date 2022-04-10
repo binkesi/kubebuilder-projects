@@ -31,8 +31,8 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/healthz"
 	"sigs.k8s.io/controller-runtime/pkg/log/zap"
 
-	fedctlsv1 "myfed.domain/myfedcluster/api/v1"
-	"myfed.domain/myfedcluster/controllers"
+	myfedv1 "github.com/binkesi/kubebuilder-projects/myfedcluster/api/v1"
+	"github.com/binkesi/kubebuilder-projects/myfedcluster/controllers"
 	//+kubebuilder:scaffold:imports
 )
 
@@ -44,7 +44,7 @@ var (
 func init() {
 	utilruntime.Must(clientgoscheme.AddToScheme(scheme))
 
-	utilruntime.Must(fedctlsv1.AddToScheme(scheme))
+	utilruntime.Must(myfedv1.AddToScheme(scheme))
 	//+kubebuilder:scaffold:scheme
 }
 
