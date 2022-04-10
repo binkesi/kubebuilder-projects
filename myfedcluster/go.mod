@@ -1,4 +1,4 @@
-module myfed.domain/myfedcluster
+module github.com/binkesi/kubebuilder-projects/myfedcluster
 
 go 1.16
 
