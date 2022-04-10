@@ -1,6 +1,0 @@
-apiVersion: fedctls.myfed.domain/v1
-kind: Fedobject
-metadata:
-  name: fedobject-sample
-spec:
-  # TODO(user): Add fields here
