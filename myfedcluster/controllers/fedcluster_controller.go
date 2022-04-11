@@ -51,14 +51,14 @@ type FedClusterReconciler struct {
 // For more details, check Reconcile and its Result here:
 // - https://pkg.go.dev/sigs.k8s.io/controller-runtime@v0.10.0/pkg/reconcile
 func (r *FedClusterReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
-	log := r.Log.WithValues("FederatedCluster", req.NamespacedName)
-	federatedCluster := &fedtypesv1.FedCluster{}
-	if err := r.Get(ctx, req.NamespacedName, federatedCluster); err != nil {
-		log.Info("Failed to get FederatedCluster", "cluster", req.NamespacedName)
+	log := r.Log.WithValues("FedCluster", req.NamespacedName)
+	fedCluster := &fedtypesv1.FedCluster{}
+	if err := r.Get(ctx, req.NamespacedName, fedCluster); err != nil {
+		log.Info("Failed to get FedCluster", "cluster", req.NamespacedName)
 		return ctrl.Result{}, client.IgnoreNotFound(err)
 	}
 
-	clusterClient, err := NewClusterClientSet(federatedCluster, r.Client, time.Second*5)
+	clusterClient, err := NewClusterClientSet(fedCluster, r.Client, time.Second*5)
 	if err != nil {
 		log.Info("Failed to generate new clusterset", "cluster", req.NamespacedName)
 		return ctrl.Result{}, err
@@ -69,9 +69,9 @@ func (r *FedClusterReconciler) Reconcile(ctx context.Context, req ctrl.Request) 
 		log.Info("Failed to get cluster status", "cluster", req.NamespacedName)
 	}
 
-	if !reflect.DeepEqual(clusterStatus, federatedCluster.Status) {
-		federatedCluster.Status = *clusterStatus
-		if err := r.Status().Update(ctx, federatedCluster, &client.UpdateOptions{}); err != nil {
+	if !reflect.DeepEqual(clusterStatus, fedCluster.Status) {
+		fedCluster.Status = *clusterStatus
+		if err := r.Status().Update(ctx, fedCluster, &client.UpdateOptions{}); err != nil {
 			if apierrors.IsConflict(err) {
 				return ctrl.Result{Requeue: true}, nil
 			}
