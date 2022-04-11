@@ -51,23 +51,8 @@ type FedClusterReconciler struct {
 // For more details, check Reconcile and its Result here:
 // - https://pkg.go.dev/sigs.k8s.io/controller-runtime@v0.10.0/pkg/reconcile
 func (r *FedClusterReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
-	_ = log.FromContext(ctx)
-
-	// TODO(user): your logic here
-
-	return ctrl.Result{}, nil
-}
-
-// SetupWithManager sets up the controller with the Manager.
-func (r *FedClusterReconciler) SetupWithManager(mgr ctrl.Manager) error {
-	return ctrl.NewControllerManagedBy(mgr).
-		For(&fedtypesv1.FedCluster{}).
-		Complete(r)
-}
-
-func (r *FedClusterReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
 	log := r.Log.WithValues("FederatedCluster", req.NamespacedName)
-	federatedCluster := &fedtypesv1.FederatedCluster{}
+	federatedCluster := &fedtypesv1.FedCluster{}
 	if err := r.Get(ctx, req.NamespacedName, federatedCluster); err != nil {
 		log.Info("Failed to get FederatedCluster", "cluster", req.NamespacedName)
 		return ctrl.Result{}, client.IgnoreNotFound(err)
@@ -100,6 +85,6 @@ func (r *FedClusterReconciler) Reconcile(ctx context.Context, req ctrl.Request) 
 // SetupWithManager sets up the controller with the Manager.
 func (r *FedClusterReconciler) SetupWithManager(mgr ctrl.Manager) error {
 	return ctrl.NewControllerManagedBy(mgr).
-		For(&fedtypesv1.FederatedCluster{}).
+		For(&fedtypesv1.FedCluster{}).
 		Complete(r)
 }
