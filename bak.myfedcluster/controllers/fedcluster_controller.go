@@ -21,44 +21,44 @@ import (
 	"reflect"
 	"time"
 
+	"github.com/go-logr/logr"
 	apierrors "k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apimachinery/pkg/runtime"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
-	myfedv1 "github.com/binkesi/kubebuilder-projects/myfedcluster/api/v1"
-	"github.com/go-logr/logr"
+	fedtypesv1 "github.com/binkesi/kubebuilder-projects/myfedcluster/api/v1"
 )
 
-// MyFedClusterReconciler reconciles a MyFedCluster object
-type MyFedClusterReconciler struct {
+// FedClusterReconciler reconciles a FedCluster object
+type FedClusterReconciler struct {
 	client.Client
 	Scheme *runtime.Scheme
 	Log    logr.Logger
 }
 
-//+kubebuilder:rbac:groups=fedctls.myfed.domain,resources=myfedclusters,verbs=get;list;watch;create;update;patch;delete
-//+kubebuilder:rbac:groups=fedctls.myfed.domain,resources=myfedclusters/status,verbs=get;update;patch
-//+kubebuilder:rbac:groups=fedctls.myfed.domain,resources=myfedclusters/finalizers,verbs=update
+//+kubebuilder:rbac:groups=fedtypes.example.com,resources=fedclusters,verbs=get;list;watch;create;update;patch;delete
+//+kubebuilder:rbac:groups=fedtypes.example.com,resources=fedclusters/status,verbs=get;update;patch
+//+kubebuilder:rbac:groups=fedtypes.example.com,resources=fedclusters/finalizers,verbs=update
 
 // Reconcile is part of the main kubernetes reconciliation loop which aims to
 // move the current state of the cluster closer to the desired state.
 // TODO(user): Modify the Reconcile function to compare the state specified by
-// the MyFedCluster object against the actual cluster state, and then
+// the FedCluster object against the actual cluster state, and then
 // perform operations to make the cluster state reflect the state specified by
 // the user.
 //
 // For more details, check Reconcile and its Result here:
 // - https://pkg.go.dev/sigs.k8s.io/controller-runtime@v0.10.0/pkg/reconcile
-func (r *MyFedClusterReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
-	log := r.Log.WithValues("MyFedCluster", req.NamespacedName)
-	federatedCluster := &myfedv1.MyFedCluster{}
-	if err := r.Get(ctx, req.NamespacedName, federatedCluster); err != nil {
-		log.Info("Failed to get FederatedCluster", "cluster", req.NamespacedName)
+func (r *FedClusterReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
+	log := r.Log.WithValues("FedCluster", req.NamespacedName)
+	fedCluster := &fedtypesv1.FedCluster{}
+	if err := r.Get(ctx, req.NamespacedName, fedCluster); err != nil {
+		log.Info("Failed to get FedCluster", "cluster", req.NamespacedName)
 		return ctrl.Result{}, client.IgnoreNotFound(err)
 	}
 
-	clusterClient, err := NewClusterClientSet(federatedCluster, r.Client, time.Second*5)
+	clusterClient, err := NewClusterClientSet(fedCluster, r.Client, time.Second*5)
 	if err != nil {
 		log.Info("Failed to generate new clusterset", "cluster", req.NamespacedName)
 		return ctrl.Result{}, err
@@ -69,9 +69,9 @@ func (r *MyFedClusterReconciler) Reconcile(ctx context.Context, req ctrl.Request
 		log.Info("Failed to get cluster status", "cluster", req.NamespacedName)
 	}
 
-	if !reflect.DeepEqual(clusterStatus, federatedCluster.Status) {
-		federatedCluster.Status = *clusterStatus
-		if err := r.Status().Update(ctx, federatedCluster, &client.UpdateOptions{}); err != nil {
+	if !reflect.DeepEqual(clusterStatus, fedCluster.Status) {
+		fedCluster.Status = *clusterStatus
+		if err := r.Status().Update(ctx, fedCluster, &client.UpdateOptions{}); err != nil {
 			if apierrors.IsConflict(err) {
 				return ctrl.Result{Requeue: true}, nil
 			}
@@ -83,8 +83,8 @@ func (r *MyFedClusterReconciler) Reconcile(ctx context.Context, req ctrl.Request
 }
 
 // SetupWithManager sets up the controller with the Manager.
-func (r *MyFedClusterReconciler) SetupWithManager(mgr ctrl.Manager) error {
+func (r *FedClusterReconciler) SetupWithManager(mgr ctrl.Manager) error {
 	return ctrl.NewControllerManagedBy(mgr).
-		For(&myfedv1.MyFedCluster{}).
+		For(&fedtypesv1.FedCluster{}).
 		Complete(r)
 }

@@ -1,20 +1,20 @@
-# permissions for end users to view myfedclusters.
+# permissions for end users to view fedclusters.
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
-  name: myfedcluster-viewer-role
+  name: fedcluster-viewer-role
 rules:
 - apiGroups:
-  - fedctls.myfed.domain
+  - fedtypes.example.com
   resources:
-  - myfedclusters
+  - fedclusters
   verbs:
   - get
   - list
   - watch
 - apiGroups:
-  - fedctls.myfed.domain
+  - fedtypes.example.com
   resources:
-  - myfedclusters/status
+  - fedclusters/status
   verbs:
   - get

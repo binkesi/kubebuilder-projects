@@ -22,12 +22,30 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
-// LocalSecretReference is a reference to a secret within the enclosing
-// namespace.
+// EDIT THIS FILE!  THIS IS SCAFFOLDING FOR YOU TO OWN!
+// NOTE: json tags are required.  Any new fields you add must have json tags for the fields to be serialized.
+
+// FedClusterSpec defines the desired state of FedCluster
+type FedClusterSpec struct {
+	// INSERT ADDITIONAL SPEC FIELDS - desired state of cluster
+	// Important: Run "make" to regenerate code after modifying this file
+
+	// Foo is an example field of FedCluster. Edit fedcluster_types.go to remove/update
+	APIEndpoint string               `json:"apiEndpoint"`
+	CABundle    []byte               `json:"caBundle,omitempty"`
+	SecretRef   LocalSecretReference `json:"secretRef"`
+}
+
+// The local secret with same namespace
 type LocalSecretReference struct {
-	// Name of a secret within the enclosing
-	// namespace
 	Name string `json:"name"`
+}
+
+// FedClusterStatus defines the observed state of FedCluster
+type FedClusterStatus struct {
+	// INSERT ADDITIONAL STATUS FIELD - define observed state of cluster
+	// Important: Run "make" to regenerate code after modifying this file
+	Conditions []ClusterCondition `json:"conditions"`
 }
 
 type ClusterCondition struct {
@@ -48,57 +66,27 @@ type ClusterCondition struct {
 	Message *string `json:"message,omitempty"`
 }
 
-// EDIT THIS FILE!  THIS IS SCAFFOLDING FOR YOU TO OWN!
-// NOTE: json tags are required.  Any new fields you add must have json tags for the fields to be serialized.
-
-// MyFedClusterSpec defines the desired state of MyFedCluster
-type MyFedClusterSpec struct {
-	// INSERT ADDITIONAL SPEC FIELDS - desired state of cluster
-	// Important: Run "make" to regenerate code after modifying this file
-
-	// The API endpoint of the member cluster. This can be a hostname,
-	// hostname:port, IP or IP:port.
-	APIEndpoint string `json:"apiEndpoint"`
-
-	// CABundle contains the certificate authority information.
-	// +optional
-	CABundle []byte `json:"caBundle,omitempty"`
-
-	// Name of the secret containing the token required to access the
-	// member cluster. The secret needs to exist in the same namespace
-	// as the control plane and should have a "token" key.
-	SecretRef LocalSecretReference `json:"secretRef"`
-}
-
-// MyFedClusterStatus defines the observed state of MyFedCluster
-type MyFedClusterStatus struct {
-	// Conditions is an array of current cluster conditions.
-	Conditions []ClusterCondition `json:"conditions"`
-	// INSERT ADDITIONAL STATUS FIELD - define observed state of cluster
-	// Important: Run "make" to regenerate code after modifying this file
-}
-
 //+kubebuilder:object:root=true
 //+kubebuilder:subresource:status
 
-// MyFedCluster is the Schema for the myfedclusters API
-type MyFedCluster struct {
+// FedCluster is the Schema for the fedclusters API
+type FedCluster struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`
 
-	Spec   MyFedClusterSpec   `json:"spec,omitempty"`
-	Status MyFedClusterStatus `json:"status,omitempty"`
+	Spec   FedClusterSpec   `json:"spec,omitempty"`
+	Status FedClusterStatus `json:"status,omitempty"`
 }
 
 //+kubebuilder:object:root=true
 
-// MyFedClusterList contains a list of MyFedCluster
-type MyFedClusterList struct {
+// FedClusterList contains a list of FedCluster
+type FedClusterList struct {
 	metav1.TypeMeta `json:",inline"`
 	metav1.ListMeta `json:"metadata,omitempty"`
-	Items           []MyFedCluster `json:"items"`
+	Items           []FedCluster `json:"items"`
 }
 
 func init() {
-	SchemeBuilder.Register(&MyFedCluster{}, &MyFedClusterList{})
+	SchemeBuilder.Register(&FedCluster{}, &FedClusterList{})
 }

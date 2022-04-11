@@ -1,0 +1,6 @@
+apiVersion: fedtypes.example.com/v1
+kind: FedCluster
+metadata:
+  name: fedcluster-sample
+spec:
+  # TODO(user): Add fields here

@@ -1,16 +1,16 @@
-domain: myfed.domain
+domain: example.com
 layout:
 - go.kubebuilder.io/v3
 projectName: myfedcluster
-repo: myfed.domain/myfedcluster
+repo: github.com/binkesi/kubebuilder-projects/myfedcluster
 resources:
 - api:
     crdVersion: v1
     namespaced: true
   controller: true
-  domain: myfed.domain
-  group: fedctls
-  kind: MyFedCluster
-  path: myfed.domain/myfedcluster/api/v1
+  domain: example.com
+  group: fedtypes
+  kind: FedCluster
+  path: github.com/binkesi/kubebuilder-projects/myfedcluster/api/v1
   version: v1
 version: "3"

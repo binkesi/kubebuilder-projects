@@ -21,13 +21,13 @@ import (
 	"reflect"
 	"time"
 
-	"github.com/go-logr/logr"
 	apierrors "k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apimachinery/pkg/runtime"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
 	fedtypesv1 "github.com/binkesi/kubebuilder-projects/myfedcluster/api/v1"
+	"github.com/go-logr/logr"
 )
 
 // FedClusterReconciler reconciles a FedCluster object
@@ -49,12 +49,12 @@ type FedClusterReconciler struct {
 // the user.
 //
 // For more details, check Reconcile and its Result here:
-// - https://pkg.go.dev/sigs.k8s.io/controller-runtime@v0.10.0/pkg/reconcile
+// - https://pkg.go.dev/sigs.k8s.io/controller-runtime@v0.11.0/pkg/reconcile
 func (r *FedClusterReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
 	log := r.Log.WithValues("FedCluster", req.NamespacedName)
 	fedCluster := &fedtypesv1.FedCluster{}
 	if err := r.Get(ctx, req.NamespacedName, fedCluster); err != nil {
-		log.Info("Failed to get FedCluster", "cluster", req.NamespacedName)
+		log.Info("Failed to get FederatedCluster", "cluster", req.NamespacedName)
 		return ctrl.Result{}, client.IgnoreNotFound(err)
 	}
 

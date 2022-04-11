@@ -31,7 +31,7 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/healthz"
 	"sigs.k8s.io/controller-runtime/pkg/log/zap"
 
-	myfedv1 "github.com/binkesi/kubebuilder-projects/myfedcluster/api/v1"
+	fedtypesv1 "github.com/binkesi/kubebuilder-projects/myfedcluster/api/v1"
 	"github.com/binkesi/kubebuilder-projects/myfedcluster/controllers"
 	//+kubebuilder:scaffold:imports
 )
@@ -44,7 +44,7 @@ var (
 func init() {
 	utilruntime.Must(clientgoscheme.AddToScheme(scheme))
 
-	utilruntime.Must(myfedv1.AddToScheme(scheme))
+	utilruntime.Must(fedtypesv1.AddToScheme(scheme))
 	//+kubebuilder:scaffold:scheme
 }
 
@@ -71,18 +71,18 @@ func main() {
 		Port:                   9443,
 		HealthProbeBindAddress: probeAddr,
 		LeaderElection:         enableLeaderElection,
-		LeaderElectionID:       "7c4cc53c.myfed.domain",
+		LeaderElectionID:       "88cb2ed6.example.com",
 	})
 	if err != nil {
 		setupLog.Error(err, "unable to start manager")
 		os.Exit(1)
 	}
 
-	if err = (&controllers.MyFedClusterReconciler{
+	if err = (&controllers.FedClusterReconciler{
 		Client: mgr.GetClient(),
 		Scheme: mgr.GetScheme(),
 	}).SetupWithManager(mgr); err != nil {
-		setupLog.Error(err, "unable to create controller", "controller", "MyFedCluster")
+		setupLog.Error(err, "unable to create controller", "controller", "FedCluster")
 		os.Exit(1)
 	}
 	//+kubebuilder:scaffold:builder

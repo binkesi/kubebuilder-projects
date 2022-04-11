@@ -30,13 +30,12 @@ type FedClusterSpec struct {
 	// INSERT ADDITIONAL SPEC FIELDS - desired state of cluster
 	// Important: Run "make" to regenerate code after modifying this file
 
-	// Foo is an example field of FedCluster. Edit fedcluster_types.go to remove/update
+	// The APIEndpoint of member cluster
 	APIEndpoint string               `json:"apiEndpoint"`
 	CABundle    []byte               `json:"caBundle,omitempty"`
 	SecretRef   LocalSecretReference `json:"secretRef"`
 }
 
-// The local secret with same namespace
 type LocalSecretReference struct {
 	Name string `json:"name"`
 }
@@ -45,9 +44,11 @@ type LocalSecretReference struct {
 type FedClusterStatus struct {
 	// INSERT ADDITIONAL STATUS FIELD - define observed state of cluster
 	// Important: Run "make" to regenerate code after modifying this file
+	// Condition set of cluster status
 	Conditions []ClusterCondition `json:"conditions"`
 }
 
+// ClusterCondition describes current state of a cluster.
 type ClusterCondition struct {
 	// Type of cluster condition, Ready or Offline.
 	Type common.ClusterConditionType `json:"type"`

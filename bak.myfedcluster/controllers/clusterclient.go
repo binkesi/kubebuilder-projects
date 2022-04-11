@@ -1,19 +1,3 @@
-/*
-Copyright 2022.
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
-
 package controllers
 
 import (
@@ -21,34 +5,27 @@ import (
 	"strings"
 	"time"
 
-	myfedv1 "github.com/binkesi/kubebuilder-projects/myfedcluster/api/v1"
+	fedtypesv1 "github.com/binkesi/kubebuilder-projects/myfedcluster/api/v1"
 	"github.com/binkesi/kubebuilder-projects/myfedcluster/api/v1/common"
 	"github.com/pkg/errors"
-
 	apiv1 "k8s.io/api/core/v1"
-
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/types"
 	"k8s.io/apimachinery/pkg/util/runtime"
-
 	kubeclientset "k8s.io/client-go/kubernetes"
-
 	restclient "k8s.io/client-go/rest"
 	"k8s.io/client-go/tools/clientcmd"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 )
 
 const (
-	UserAgentName     = "Cluster-Controller"
+	UserAgentName = "Cluster-Controller"
+
 	KubeAPIQPS        = 20.0
 	KubeAPIBurst      = 30
 	TokenKey          = "token"
 	CaCrtKey          = "ca.crt"
 	KubeFedConfigName = "kubefed"
-
-	// Following labels come from k8s.io/kubernetes/pkg/kubelet/apis
-	LabelZoneFailureDomain = "failure-domain.beta.kubernetes.io/zone"
-	LabelZoneRegion        = "failure-domain.beta.kubernetes.io/region"
 
 	// Common ClusterConditions for KubeFedClusterStatus
 	ClusterReady                 = "ClusterReady"
@@ -63,13 +40,12 @@ const (
 	ClusterConfigMalformedMsg    = "cluster's configuration may be malformed"
 )
 
-// particular KubeFedCluster.
 type ClusterClient struct {
 	kubeClient  *kubeclientset.Clientset
 	clusterName string
 }
 
-func NewClusterClientSet(c *myfedv1.MyFedCluster, client client.Client, timeout time.Duration) (*ClusterClient, error) {
+func NewClusterClientSet(c *fedtypesv1.FedCluster, client client.Client, timeout time.Duration) (*ClusterClient, error) {
 	clusterClientSet := ClusterClient{clusterName: c.Name}
 	clusterConfig, err := buildClusterConfig(c, client)
 	if err != nil {
@@ -80,7 +56,7 @@ func NewClusterClientSet(c *myfedv1.MyFedCluster, client client.Client, timeout 
 	return &clusterClientSet, err
 }
 
-func buildClusterConfig(fedCluster *myfedv1.MyFedCluster, client client.Client) (*restclient.Config, error) {
+func buildClusterConfig(fedCluster *fedtypesv1.FedCluster, client client.Client) (*restclient.Config, error) {
 	clusterName := fedCluster.Name
 
 	apiEndpoint := fedCluster.Spec.APIEndpoint
@@ -121,12 +97,12 @@ func buildClusterConfig(fedCluster *myfedv1.MyFedCluster, client client.Client) 
 }
 
 // GetClusterHealthStatus gets the kubernetes cluster health status by requesting "/healthz"
-func (c *ClusterClient) GetClusterHealthStatus() (*myfedv1.MyFedClusterStatus, error) {
-	clusterStatus := myfedv1.MyFedClusterStatus{}
+func (c *ClusterClient) GetClusterHealthStatus() (*fedtypesv1.FedClusterStatus, error) {
+	clusterStatus := fedtypesv1.FedClusterStatus{}
 	currentTime := metav1.Now()
 	clusterReady := ClusterReady
 	healthzOk := HealthzOk
-	newClusterReadyCondition := myfedv1.ClusterCondition{
+	newClusterReadyCondition := fedtypesv1.ClusterCondition{
 		Type:               common.ClusterReady,
 		Status:             apiv1.ConditionTrue,
 		Reason:             &clusterReady,
@@ -136,7 +112,7 @@ func (c *ClusterClient) GetClusterHealthStatus() (*myfedv1.MyFedClusterStatus, e
 	}
 	clusterNotReady := ClusterNotReady
 	healthzNotOk := HealthzNotOk
-	newClusterNotReadyCondition := myfedv1.ClusterCondition{
+	newClusterNotReadyCondition := fedtypesv1.ClusterCondition{
 		Type:               common.ClusterReady,
 		Status:             apiv1.ConditionFalse,
 		Reason:             &clusterNotReady,
@@ -146,7 +122,7 @@ func (c *ClusterClient) GetClusterHealthStatus() (*myfedv1.MyFedClusterStatus, e
 	}
 	clusterNotReachableReason := ClusterNotReachableReason
 	clusterNotReachableMsg := ClusterNotReachableMsg
-	newClusterOfflineCondition := myfedv1.ClusterCondition{
+	newClusterOfflineCondition := fedtypesv1.ClusterCondition{
 		Type:               common.ClusterOffline,
 		Status:             apiv1.ConditionTrue,
 		Reason:             &clusterNotReachableReason,
@@ -156,7 +132,7 @@ func (c *ClusterClient) GetClusterHealthStatus() (*myfedv1.MyFedClusterStatus, e
 	}
 	clusterReachableReason := ClusterReachableReason
 	clusterReachableMsg := ClusterReachableMsg
-	newClusterNotOfflineCondition := myfedv1.ClusterCondition{
+	newClusterNotOfflineCondition := fedtypesv1.ClusterCondition{
 		Type:               common.ClusterOffline,
 		Status:             apiv1.ConditionFalse,
 		Reason:             &clusterReachableReason,
@@ -166,7 +142,7 @@ func (c *ClusterClient) GetClusterHealthStatus() (*myfedv1.MyFedClusterStatus, e
 	}
 	clusterConfigMalformedReason := ClusterConfigMalformedReason
 	clusterConfigMalformedMsg := ClusterConfigMalformedMsg
-	newClusterConfigMalformedCondition := myfedv1.ClusterCondition{
+	newClusterConfigMalformedCondition := fedtypesv1.ClusterCondition{
 		Type:               common.ClusterConfigMalformed,
 		Status:             apiv1.ConditionTrue,
 		Reason:             &clusterConfigMalformedReason,
