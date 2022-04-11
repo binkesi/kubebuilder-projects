@@ -2,7 +2,7 @@ domain: example.com
 layout:
 - go.kubebuilder.io/v3
 projectName: myfedcluster
-repo: example.com/myfedcluster
+repo: github.com/binkesi/kubebuilder-projects/myfedcluster
 resources:
 - api:
     crdVersion: v1
@@ -11,6 +11,6 @@ resources:
   domain: example.com
   group: fedtypes
   kind: FedCluster
-  path: example.com/myfedcluster/api/v1
+  path: github.com/binkesi/kubebuilder-projects/myfedcluster/api/v1
   version: v1
 version: "3"

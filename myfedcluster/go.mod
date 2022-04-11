@@ -1,4 +1,4 @@
-module example.com/myfedcluster
+module github.com/binkesi/kubebuilder-projects/myfedcluster
 
 go 1.16
 

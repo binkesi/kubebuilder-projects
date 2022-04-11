@@ -30,7 +30,7 @@ import (
 	logf "sigs.k8s.io/controller-runtime/pkg/log"
 	"sigs.k8s.io/controller-runtime/pkg/log/zap"
 
-	fedtypesv1 "example.com/myfedcluster/api/v1"
+	fedtypesv1 "github.com/binkesi/kubebuilder-projects/myfedcluster/api/v1"
 	//+kubebuilder:scaffold:imports
 )
 

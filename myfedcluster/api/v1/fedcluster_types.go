@@ -17,6 +17,8 @@ limitations under the License.
 package v1
 
 import (
+	"github.com/binkesi/kubebuilder-projects/myfedcluster/api/v1/common"
+	apiv1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
@@ -29,13 +31,39 @@ type FedClusterSpec struct {
 	// Important: Run "make" to regenerate code after modifying this file
 
 	// Foo is an example field of FedCluster. Edit fedcluster_types.go to remove/update
-	Foo string `json:"foo,omitempty"`
+	APIEndpoint string               `json:"apiEndpoint"`
+	CABundle    []byte               `json:"caBundle,omitempty"`
+	SecretRef   LocalSecretReference `json:"secretRef"`
+}
+
+// The local secret with same namespace
+type LocalSecretReference struct {
+	Name string `json:"name"`
 }
 
 // FedClusterStatus defines the observed state of FedCluster
 type FedClusterStatus struct {
 	// INSERT ADDITIONAL STATUS FIELD - define observed state of cluster
 	// Important: Run "make" to regenerate code after modifying this file
+	Conditions []ClusterCondition `json:"conditions"`
+}
+
+type ClusterCondition struct {
+	// Type of cluster condition, Ready or Offline.
+	Type common.ClusterConditionType `json:"type"`
+	// Status of the condition, one of True, False, Unknown.
+	Status apiv1.ConditionStatus `json:"status"`
+	// Last time the condition was checked.
+	LastProbeTime metav1.Time `json:"lastProbeTime"`
+	// Last time the condition transit from one status to another.
+	// +optional
+	LastTransitionTime *metav1.Time `json:"lastTransitionTime,omitempty"`
+	// (brief) reason for the condition's last transition.
+	// +optional
+	Reason *string `json:"reason,omitempty"`
+	// Human readable message indicating details about last transition.
+	// +optional
+	Message *string `json:"message,omitempty"`
 }
 
 //+kubebuilder:object:root=true

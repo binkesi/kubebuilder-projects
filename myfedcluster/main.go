@@ -31,8 +31,8 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/healthz"
 	"sigs.k8s.io/controller-runtime/pkg/log/zap"
 
-	fedtypesv1 "example.com/myfedcluster/api/v1"
-	"example.com/myfedcluster/controllers"
+	fedtypesv1 "github.com/binkesi/kubebuilder-projects/myfedcluster/api/v1"
+	"github.com/binkesi/kubebuilder-projects/myfedcluster/controllers"
 	//+kubebuilder:scaffold:imports
 )
 

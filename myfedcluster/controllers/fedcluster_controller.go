@@ -18,19 +18,23 @@ package controllers
 
 import (
 	"context"
+	"reflect"
+	"time"
 
+	"github.com/go-logr/logr"
+	apierrors "k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apimachinery/pkg/runtime"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
-	"sigs.k8s.io/controller-runtime/pkg/log"
 
-	fedtypesv1 "example.com/myfedcluster/api/v1"
+	fedtypesv1 "github.com/binkesi/kubebuilder-projects/myfedcluster/api/v1"
 )
 
 // FedClusterReconciler reconciles a FedCluster object
 type FedClusterReconciler struct {
 	client.Client
 	Scheme *runtime.Scheme
+	Log    logr.Logger
 }
 
 //+kubebuilder:rbac:groups=fedtypes.example.com,resources=fedclusters,verbs=get;list;watch;create;update;patch;delete
@@ -58,5 +62,44 @@ func (r *FedClusterReconciler) Reconcile(ctx context.Context, req ctrl.Request) 
 func (r *FedClusterReconciler) SetupWithManager(mgr ctrl.Manager) error {
 	return ctrl.NewControllerManagedBy(mgr).
 		For(&fedtypesv1.FedCluster{}).
+		Complete(r)
+}
+
+func (r *FedClusterReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
+	log := r.Log.WithValues("FederatedCluster", req.NamespacedName)
+	federatedCluster := &fedtypesv1.FederatedCluster{}
+	if err := r.Get(ctx, req.NamespacedName, federatedCluster); err != nil {
+		log.Info("Failed to get FederatedCluster", "cluster", req.NamespacedName)
+		return ctrl.Result{}, client.IgnoreNotFound(err)
+	}
+
+	clusterClient, err := NewClusterClientSet(federatedCluster, r.Client, time.Second*5)
+	if err != nil {
+		log.Info("Failed to generate new clusterset", "cluster", req.NamespacedName)
+		return ctrl.Result{}, err
+	}
+
+	clusterStatus, err := clusterClient.GetClusterHealthStatus()
+	if err != nil {
+		log.Info("Failed to get cluster status", "cluster", req.NamespacedName)
+	}
+
+	if !reflect.DeepEqual(clusterStatus, federatedCluster.Status) {
+		federatedCluster.Status = *clusterStatus
+		if err := r.Status().Update(ctx, federatedCluster, &client.UpdateOptions{}); err != nil {
+			if apierrors.IsConflict(err) {
+				return ctrl.Result{Requeue: true}, nil
+			}
+			log.Info("Failed to update cluster status", "cluster", req.NamespacedName)
+		}
+		log.Info("Success to update cluster status", "cluster", req.NamespacedName)
+	}
+	return ctrl.Result{}, nil
+}
+
+// SetupWithManager sets up the controller with the Manager.
+func (r *FedClusterReconciler) SetupWithManager(mgr ctrl.Manager) error {
+	return ctrl.NewControllerManagedBy(mgr).
+		For(&fedtypesv1.FederatedCluster{}).
 		Complete(r)
 }
