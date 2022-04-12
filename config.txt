@@ -1,0 +1,39 @@
+apiVersion: v1
+clusters:
+- cluster:
+    server: https://127.0.0.1:6443
+  name: cluster-0
+- cluster:
+    certificate-authority: /home/kube/.minikube/ca.crt
+    extensions:
+    - extension:
+        last-update: Mon, 11 Apr 2022 11:42:25 CEST
+        provider: minikube.sigs.k8s.io
+        version: v1.23.1
+      name: cluster_info
+    server: https://192.168.49.2:8443
+  name: host-cluster
+contexts:
+- context:
+    cluster: host-cluster
+    extensions:
+    - extension:
+        last-update: Mon, 11 Apr 2022 11:42:25 CEST
+        provider: minikube.sigs.k8s.io
+        version: v1.23.1
+      name: context_info
+    namespace: default
+    user: host-cluster
+  name: host-cluster
+current-context: host-cluster
+kind: Config
+preferences: {}
+users:
+- name: host-cluster
+  user:
+    client-certificate: /home/kube/.minikube/profiles/host-cluster/client.crt
+    client-key: /home/kube/.minikube/profiles/host-cluster/client.key
+    token: default-token-f2v8r
+- name: myfed-user
+  user:
+    token: eyJhbGciOiJSUzI1NiIsImtpZCI6Im1vc1FZTjgtejNDUUw3T0l0OHBUaTJnUERkNGZ5UHg2QVZEeHY3WGxRcjQifQ.eyJpc3MiOiJrdWJlcm5ldGVzL3NlcnZpY2VhY2NvdW50Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9uYW1lc3BhY2UiOiJkZWZhdWx0Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9zZWNyZXQubmFtZSI6ImRlZmF1bHQtdG9rZW4tZjJ2OHIiLCJrdWJlcm5ldGVzLmlvL3NlcnZpY2VhY2NvdW50L3NlcnZpY2UtYWNjb3VudC5uYW1lIjoiZGVmYXVsdCIsImt1YmVybmV0ZXMuaW8vc2VydmljZWFjY291bnQvc2VydmljZS1hY2NvdW50LnVpZCI6ImFkYzFjMGE2LWQ5MDMtNDdkNy05NTFmLTY2ZjJiMDNiMTk5ZCIsInN1YiI6InN5c3RlbTpzZXJ2aWNlYWNjb3VudDpkZWZhdWx0OmRlZmF1bHQifQ.IRLpC-uoA-5Hb6XfJfV9o0JMmt0ANEi6cabB-IXDv4Jxoo6pBWQFX4kLw2YQT-7I7kBD8kcncYaxNlmDBxRiQFK2j9bq5StFjP-D7lega6vRS0xytXDAXg8I1JHhyxOzeK-ByZs2g5_C0eeVElsRiW_55Ih7TVAk2jweqoZniunHJqD_eNXlA3SACC77-sUPEjdrKR7GztVpKgFvCiD-r-pE9VRiCryKQn-4skjFtnEJ0cY5n03ksmEudYikPAsABoUhcFjF8U9nN8zJoL-bsNE77_r-KcBqtKuZ8cREniHLEVuwwoXGfEb4Bf_7rPAEVeFD6VKMzT8oIAJKqLUEcQ

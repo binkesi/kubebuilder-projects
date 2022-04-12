@@ -1,0 +1,20 @@
+# permissions for end users to view fedtypeconfigs.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: fedtypeconfig-viewer-role
+rules:
+- apiGroups:
+  - fedtypes.example.com
+  resources:
+  - fedtypeconfigs
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - fedtypes.example.com
+  resources:
+  - fedtypeconfigs/status
+  verbs:
+  - get

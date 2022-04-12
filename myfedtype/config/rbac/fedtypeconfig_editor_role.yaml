@@ -1,0 +1,24 @@
+# permissions for end users to edit fedtypeconfigs.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: fedtypeconfig-editor-role
+rules:
+- apiGroups:
+  - fedtypes.example.com
+  resources:
+  - fedtypeconfigs
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - fedtypes.example.com
+  resources:
+  - fedtypeconfigs/status
+  verbs:
+  - get
