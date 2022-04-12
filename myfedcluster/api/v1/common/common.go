@@ -11,3 +11,7 @@ const (
 	// ClusterConfigMalformed means the cluster's configuration may be malformed.
 	ClusterConfigMalformed ClusterConditionType = "ConfigMalformed"
 )
+
+const (
+	NamespaceName = "namespaces"
+)

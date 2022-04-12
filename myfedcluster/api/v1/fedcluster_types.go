@@ -31,9 +31,11 @@ type FedClusterSpec struct {
 	// Important: Run "make" to regenerate code after modifying this file
 
 	// The APIEndpoint of member cluster
-	APIEndpoint string               `json:"apiEndpoint"`
-	CABundle    []byte               `json:"caBundle,omitempty"`
-	SecretRef   LocalSecretReference `json:"secretRef"`
+	APIEndpoint string `json:"apiEndpoint"`
+	// certificate of kubernetes cluster
+	CABundle []byte `json:"caBundle,omitempty"`
+	// service account
+	SecretRef LocalSecretReference `json:"secretRef"`
 }
 
 type LocalSecretReference struct {
@@ -42,8 +44,6 @@ type LocalSecretReference struct {
 
 // FedClusterStatus defines the observed state of FedCluster
 type FedClusterStatus struct {
-	// INSERT ADDITIONAL STATUS FIELD - define observed state of cluster
-	// Important: Run "make" to regenerate code after modifying this file
 	// Condition set of cluster status
 	Conditions []ClusterCondition `json:"conditions"`
 }
