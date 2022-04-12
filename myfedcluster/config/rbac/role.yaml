@@ -31,3 +31,29 @@ rules:
   - get
   - patch
   - update
+- apiGroups:
+  - fedtypes.example.com
+  resources:
+  - fedtypeconfigs
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - fedtypes.example.com
+  resources:
+  - fedtypeconfigs/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - fedtypes.example.com
+  resources:
+  - fedtypeconfigs/status
+  verbs:
+  - get
+  - patch
+  - update

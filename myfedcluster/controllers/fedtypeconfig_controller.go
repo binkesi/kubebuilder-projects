@@ -24,7 +24,7 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/log"
 
-	fedtypesv1 "example.com/myfedtype/api/v1"
+	fedtypesv1 "github.com/binkesi/kubebuilder-projects/myfedcluster/api/v1"
 )
 
 // FedTypeConfigReconciler reconciles a FedTypeConfig object
