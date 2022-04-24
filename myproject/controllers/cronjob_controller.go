@@ -18,24 +18,47 @@ package controllers
 
 import (
 	"context"
+	"time"
 
+	"github.com/robfig/cron"
+    kbatch "k8s.io/api/batch/v1"
+    corev1 "k8s.io/api/core/v1"
+    metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
+	ref "k8s.io/client-go/tools/reference"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/log"
 
-	batchv1 "binkesi.kubebuilder.io/myproject/api/v1"
+	batchv1 "github.com/binkesi/kubebuilder-projects/myproject/api/v1"
 )
 
 // CronJobReconciler reconciles a CronJob object
 type CronJobReconciler struct {
 	client.Client
 	Scheme *runtime.Scheme
+	Clock
 }
+
+// clock knows how to get the current time.
+// It can be used to fake out timing for testing.
+type Clock interface{
+	Now() time.Time
+}
+
+type realClock struct{}
+
+func(_ realClock)Now() time.Time{ return time.Now() }
+
+var (
+    scheduledTimeAnnotation = "batch.tutorial.kubebuilder.io/scheduled-at"
+)
 
 //+kubebuilder:rbac:groups=batch.binkesi.kubebuilder.io,resources=cronjobs,verbs=get;list;watch;create;update;patch;delete
 //+kubebuilder:rbac:groups=batch.binkesi.kubebuilder.io,resources=cronjobs/status,verbs=get;update;patch
 //+kubebuilder:rbac:groups=batch.binkesi.kubebuilder.io,resources=cronjobs/finalizers,verbs=update
+//+kubebuilder:rbac:groups=batch,resources=jobs,verbs=get;list;watch;create;update;patch;delete
+//+kubebuilder:rbac:groups=batch,resources=jobs/status,verbs=get
 
 // Reconcile is part of the main kubernetes reconciliation loop which aims to
 // move the current state of the cluster closer to the desired state.
@@ -47,7 +70,9 @@ type CronJobReconciler struct {
 // For more details, check Reconcile and its Result here:
 // - https://pkg.go.dev/sigs.k8s.io/controller-runtime@v0.11.0/pkg/reconcile
 func (r *CronJobReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
-	_ = log.FromContext(ctx)
+	log := log.FromContext(ctx)
+	var cronjob := batchv1.CronJob
+
 
 	// TODO(user): your logic here
 
