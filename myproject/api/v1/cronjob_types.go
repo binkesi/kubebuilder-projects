@@ -85,7 +85,7 @@ type CronJobStatus struct {
 	Active []corev1.ObjectReference `json:"active,omitempty"`
 	// Information when was the last time the job was successfully scheduled.
 	// +optional
-	LastScheduleTime metav1.Time `json:"lastScheduleTime,omitempty"`
+	LastScheduleTime *metav1.Time `json:"lastScheduleTime,omitempty"`
 }
 
 //+kubebuilder:object:root=true
