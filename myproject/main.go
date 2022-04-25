@@ -31,8 +31,8 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/healthz"
 	"sigs.k8s.io/controller-runtime/pkg/log/zap"
 
-	batchv1 "github.com/binkesi/kubebuilder-projects/myproject/api/v1"
-	"github.com/binkesi/kubebuilder-projects/myproject/controllers"
+	batchv1 "binkesi.kubebuilder.io/myproject/api/v1"
+	"binkesi.kubebuilder.io/myproject/controllers"
 	//+kubebuilder:scaffold:imports
 )
 
@@ -83,6 +83,10 @@ func main() {
 		Scheme: mgr.GetScheme(),
 	}).SetupWithManager(mgr); err != nil {
 		setupLog.Error(err, "unable to create controller", "controller", "CronJob")
+		os.Exit(1)
+	}
+	if err = (&batchv1.CronJob{}).SetupWebhookWithManager(mgr); err != nil {
+		setupLog.Error(err, "unable to create webhook", "webhook", "CronJob")
 		os.Exit(1)
 	}
 	//+kubebuilder:scaffold:builder

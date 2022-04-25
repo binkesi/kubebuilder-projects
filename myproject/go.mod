@@ -1,4 +1,4 @@
-module github.com/binkesi/kubebuilder-projects/myproject
+module binkesi.kubebuilder.io/myproject
 
 go 1.17
 
